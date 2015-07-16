@@ -1,0 +1,29 @@
+worker_processes 1;
+
+events { worker_connections 1024; }
+
+error_log /dev/stdout info;
+
+http {
+
+  access_log /dev/stdout;
+
+  # http://stackoverflow.com/questions/27912917/how-to-configure-docker-port-mapping-to-use-nginx-as-an-upstream-proxy  
+  upstream flask {
+    server FLASK:5000;
+  }
+
+  server {
+    listen 80;
+
+    location / {
+      proxy_pass http://flask;
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+      proxy_set_header Host $host;
+      proxy_cache_bypass $http_upgrade;
+    }
+  }
+
+}
