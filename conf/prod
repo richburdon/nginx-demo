@@ -1,16 +1,31 @@
+# https://www.digitalocean.com/community/tutorials/how-to-deploy-a-meteor-js-application-on-ubuntu-14-04-with-nginx
+# http://stackoverflow.com/questions/27912917/how-to-configure-docker-port-mapping-to-use-nginx-as-an-upstream-proxy
+
 worker_processes 1;
 
 events { worker_connections 1024; }
 
+# TODO
 error_log /dev/stdout info;
+
+gzip on;
+gzip_disable "msie6";
+gzip_vary on;
+gzip_proxied any;
+gzip_comp_level 6;
+gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 
 http {
 
+  # TODO
   access_log /dev/stdout;
 
-  # http://stackoverflow.com/questions/27912917/how-to-configure-docker-port-mapping-to-use-nginx-as-an-upstream-proxy  
   upstream flask {
     server FLASK:5000;
+  }
+
+  upstream meteor {
+    server METEOR:3000;
   }
 
   server {
@@ -26,4 +41,27 @@ http {
     }
   }
 
+  server {
+    listen 443 ssl;
+    server_name app.darkzero.net;
+
+    ssl on;
+    ssl_certificate /etc/ssl/nginx/certificate.crt;
+    ssl_certificate_key /etc/ssl/nginx/certificate.key;
+
+    access_log /var/log/nginx/localhost.ssl_access_log main;
+    error_log /var/log/nginx/localhost.ssl_error_log info;
+
+    location / {
+       proxy_pass http://meteor;
+       proxy_http_version 1.1;
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection 'upgrade';
+       proxy_set_header Host $host;
+       proxy_set_header X-Real-IP $remote_addr;
+       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+  }
+
 }
+
