@@ -1,21 +1,14 @@
 # https://docs.docker.com/compose/yml
 
-flask-demo:
-  image: richburdon/flask-demo
+flask:
   extends:
     file: ../flask-demo/docker-compose.yml
-    service: flask-demo
+    service: flask
 
-meteor-demo:
-  image: richburdon/meteor-demo
-  extends:
-    file: ../meteor-demo/docker-compose.yml
-    service: meteor-demo
-
-nginx-demo:
-  image: richburdon/nginx-demo
+nginx:
+  build: .
   ports:
     - "80:80"
   links:
-    - flask-demo:FLASK
-    - meteor-demo:METEOR
+    - flask:FLASK
+

@@ -1,7 +1,0 @@
-# http://docs.rancher.com/rancher/rancher-compose
-
-nginx-demo:
-  image: richburdon/nginx-demo
-  scale: 1
-
-
