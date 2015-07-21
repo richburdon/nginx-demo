@@ -1,5 +1,6 @@
 # https://www.digitalocean.com/community/tutorials/how-to-deploy-a-meteor-js-application-on-ubuntu-14-04-with-nginx
 # http://stackoverflow.com/questions/27912917/how-to-configure-docker-port-mapping-to-use-nginx-as-an-upstream-proxy
+# Docker modifies /etc/hosts with --name and --link
 
 worker_processes 1;
 
@@ -29,7 +30,7 @@ http {
 #  }
 
   server {
-    listen 80;
+    listen 8080;
 
     location / {
       proxy_pass http://flask;
