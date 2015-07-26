@@ -18,10 +18,6 @@ http {
     server FLASK:5000;
   }
 
-  upstream socketio {
-    server FLASK:5000/socket.io;
-  }
-
   server {
     listen 80;
 
@@ -37,7 +33,7 @@ http {
 
     # https://flask-socketio.readthedocs.org/en/latest
     location /socket.io {
-      proxy_pass http://socketio;
+      proxy_pass http://flask/socket.io;
       proxy_redirect off;
       proxy_buffering off;
 
