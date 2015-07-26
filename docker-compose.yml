@@ -1,9 +1,14 @@
 # https://docs.docker.com/compose/yml
 
+neo:
+  image: kbastani/docker-neo4j
+
 flask:
-  extends:
-    file: ../flask-demo/docker-compose.yml
-    service: flask
+  image: richburdon/flask-demo 
+  ports:
+    - "5000:5000"
+  links:
+    - neo:NEO
 
 nginx:
   build: .
