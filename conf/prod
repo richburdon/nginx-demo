@@ -1,10 +1,20 @@
-# https://www.digitalocean.com/community/tutorials/how-to-deploy-a-meteor-js-application-on-ubuntu-14-04-with-nginx
-# http://stackoverflow.com/questions/27912917/how-to-configure-docker-port-mapping-to-use-nginx-as-an-upstream-proxy
-# Docker modifies /etc/hosts with --name and --link
+# REFS
+#   https://www.digitalocean.com/community/tutorials/how-to-deploy-a-meteor-js-application-on-ubuntu-14-04-with-nginx
+#   http://stackoverflow.com/questions/27912917/how-to-configure-docker-port-mapping-to-use-nginx-as-an-upstream-proxy
+
+# NOTES
+#   Docker modifies /etc/hosts with --name and --link
+
+# TROUBLESHOOTING
+# 502 Bad Gateway
+#   [error] 6#6: *7 connect() failed (111: Connection refused) while connecting to upstream
+#   Problem with upstream server (check log; check IP address (e.g., Flask host not 0.0.0.0)
 
 worker_processes 1;
 
-events { worker_connections 1024; }
+events {
+  worker_connections 1024;
+}
 
 # TODO(burdon): Conf logging.
 error_log /dev/stdout info;
@@ -32,20 +42,19 @@ http {
     }
 
     # https://flask-socketio.readthedocs.org/en/latest
-#    location /socket.io {
-#      proxy_pass http://flask/socket.io;
-#      proxy_redirect off;
-#      proxy_buffering off;
+    location /socket.io {
+      proxy_pass http://flask/socket.io;
+      proxy_redirect off;
+      proxy_buffering off;
 
-#      proxy_set_header Host $host;
-#      proxy_set_header X-Real-IP $remote_addr;
-#      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-#      proxy_http_version 1.1;
-#      proxy_set_header Upgrade $http_upgrade;
-#      proxy_set_header Connection "Upgrade";
-#    }
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "Upgrade";
+    }
   }
 
 }
-
