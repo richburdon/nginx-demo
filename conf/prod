@@ -29,10 +29,6 @@ http {
     server DEMO:5000;
   }
 
-  upstream frontend {
-    server FRONTEND:5000;
-  }
-
   server {
     listen 80;
 
